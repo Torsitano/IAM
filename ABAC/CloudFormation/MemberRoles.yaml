@@ -63,7 +63,17 @@ Resources:
             AWS: !Sub arn:aws:iam::${PortalAccountId}:root
           Action:
           - sts:AssumeRole
-          Condition: {}
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/TeamAdmin: "True"
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${PortalAccountId}:root
+          Action:
+          - sts:AssumeRole
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/TeamPowerUser: "True"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/PowerUserAccess
       Tags:
