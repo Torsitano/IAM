@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  IdpName:
+    Type: String
+    Default: ADFS
+    Description: Name of the Identity Provider
+
+  PortalRoleName:
+    Type: String
+    Default: Team-Portal-Role
+
+  AssumeRoleManagedPolicyName:
+    Type: String
+    Default: AllowAssumeTeamRolesPolicy
+    Description: The name of the Managed Policy for the Portal Role that allows teams to access their team specific Roles
+
+  AssumeRoleManagedPolicyDescription:
+    Type: String
+    Default: This policy allows team members to assume team IAM Roles
+
+
+Resources:
+
+  AllowAssumeRoleManagedPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Ref AssumeRoleManagedPolicyName
+      Description: !Ref AssumeRoleManagedPolicyDescription
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Effect: Allow
+          Action:
+          - sts:AssumeRole
+          Resource: arn:aws:iam::*:role/*
+          Condition:
+            StringEquals:
+              iam:ResourceTag/Team: "${aws:PrincipalTag/Team}"
+          
+  PortalRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref PortalRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Federated: !Sub arn:aws:iam::${AWS::AccountId}:saml-provider/${IdpName}
+          Action:
+          - sts:AssumeRoleWithSAML
+          - sts:TagSession
+          Condition:
+            StringEquals:
+              SAML:aud: https://signin.aws.amazon.com/saml
+      ManagedPolicyArns:
+        - !Ref AllowAssumeRoleManagedPolicy
+      Tags:
+        - Key: CF-Stack-Name
+          Value: !Ref AWS::StackName

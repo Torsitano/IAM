@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+
+  PortalAccountId:
+    Type: String
+    Default: 698852667105
+
+  TeamAdminRoleName:
+    Type: String
+    Default: Team-Admin-Role
+    Description: Name of the Team Admin IAM Role
+
+  TeamPowerUserRoleName:
+    Type: String
+    Default: Team-Power-User-Role
+    Description: Name of the Team Power User IAM Role
+
+  TeamViewOnlyRoleName:
+    Type: String
+    Default: Team-View-Only-Role
+    Description: Name of the Team Power User IAM Role
+
+  TeamName:
+    Type: String
+    Default: Team1
+
+
+Resources:
+
+  TeamAdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref TeamAdminRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${PortalAccountId}:root
+          Action:
+          - sts:AssumeRole
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/TeamAdmin: "True"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      Tags:
+        - Key: CF-Stack-Name
+          Value: !Ref AWS::StackName
+        - Key: Team
+          Value: !Ref TeamName
+
+  TeamPowerUserRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref TeamPowerUserRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${PortalAccountId}:root
+          Action:
+          - sts:AssumeRole
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/TeamAdmin: "True"
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${PortalAccountId}:root
+          Action:
+          - sts:AssumeRole
+          Condition:
+            StringEquals:
+              aws:PrincipalTag/TeamPowerUser: "True"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+      Tags:
+        - Key: CF-Stack-Name
+          Value: !Ref AWS::StackName
+        - Key: Team
+          Value: !Ref TeamName
+
+  TeamViewerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref TeamViewOnlyRoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub arn:aws:iam::${PortalAccountId}:root
+          Action:
+          - sts:AssumeRole
+          Condition: {}
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/job-function/ViewOnlyAccess
+      Tags:
+        - Key: CF-Stack-Name
+          Value: !Ref AWS::StackName
+        - Key: Team
+          Value: !Ref TeamName
+  
