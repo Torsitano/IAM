@@ -24,6 +24,10 @@ Parameters:
     Type: String
     Default: TeamAlpha
 
+  TeamPortalRoleName:
+    Type: String
+    Default: Team-Portal-Role
+
 Resources:
 
   TeamAdminRole:
@@ -38,7 +42,7 @@ Resources:
               {
                 "Effect": "Allow",
                 "Principal": {
-                  "AWS": "arn:aws:iam::${PortalAccountId}:role/Team-Portal-Role"
+                  "AWS": "arn:aws:iam::${PortalAccountId}:role/${TeamPortalRoleName}"
                 },
                 "Action": "sts:AssumeRole",
                 "Condition": {
@@ -68,7 +72,7 @@ Resources:
               {
                 "Effect": "Allow",
                 "Principal": {
-                  "AWS": "arn:aws:iam::${PortalAccountId}:role/Team-Portal-Role"
+                  "AWS": "arn:aws:iam::${PortalAccountId}:role/${TeamPortalRoleName}"
                 },
                 "Action": "sts:AssumeRole",
                 "Condition": {
@@ -81,7 +85,7 @@ Resources:
               {
                 "Effect": "Allow",
                 "Principal": {
-                  "AWS": "arn:aws:iam::${PortalAccountId}:role/Team-Portal-Role"
+                  "AWS": "arn:aws:iam::${PortalAccountId}:role/${TeamPortalRoleName}"
                 },
                 "Action": "sts:AssumeRole",
                 "Condition": {
@@ -111,7 +115,7 @@ Resources:
               {
                 "Effect": "Allow",
                 "Principal": {
-                  "AWS": "arn:aws:iam::${PortalAccountId}:role/Team-Portal-Role"
+                  "AWS": "arn:aws:iam::${PortalAccountId}:role/${TeamPortalRoleName}"
                 },
                 "Action": "sts:AssumeRole",
                 "Condition": {
