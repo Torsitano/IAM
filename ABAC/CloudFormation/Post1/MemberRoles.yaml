@@ -4,7 +4,6 @@ Parameters:
 
   PortalAccountId:
     Type: String
-    Default: 698852667105
 
   TeamAdminRoleName:
     Type: String

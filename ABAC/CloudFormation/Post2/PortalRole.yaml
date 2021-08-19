@@ -34,10 +34,7 @@ Resources:
           Effect: Allow
           Action:
           - sts:AssumeRole
-          Resource: arn:aws:iam::*:role/*
-          Condition:
-            StringEquals:
-              iam:ResourceTag/Team: "${aws:PrincipalTag/Team}"
+          Resource: arn:aws:iam::*:role/Team-*-Role
           
   PortalRole:
     Type: AWS::IAM::Role
